@@ -1,0 +1,201 @@
+# .github/workflows/ipca.yml
+#
+# O sistema rodando sozinho: acorda todo dia de manhã, pergunta à sentinela se
+# há motivo, e só acorda o time de agentes quando há.
+#
+# O desenho todo existe por causa de uma conta: a sentinela custa duas
+# requisições HTTP e não gasta token nenhum; o time custa várias chamadas de LLM.
+# Na maioria dos dias a resposta é "nada a fazer". Rodar o time todo dia para
+# descobrir isso seria queimar dinheiro para ouvir "não".
+#
+# Fluxo:
+#
+#   agenda (ou botão)
+#        │
+#        ▼
+#   [sentinela] --- nada a fazer ---> encerra o job aqui, verde, sem gastar token
+#        │
+#        └-------- há motivo --------> [time de agentes] -> [commit de volta]
+#
+# ATENÇÃO ao laço infinito: o passo final faz um commit no próprio repositório.
+# Sem proteção, esse commit dispararia o workflow de novo, que commitaria de
+# novo, para sempre. Duas travas independentes impedem isso, ver o bloco `on:` e
+# o `[skip ci]` da mensagem de commit.
+
+name: IPCA — previsão automática
+
+on:
+  schedule:
+    # Todo dia às 09:00 UTC = 06:00 em Brasília (UTC-3).
+    #
+    # Por que cedo: o IBGE divulga o IPCA às 9h de Brasília. Rodando às 6h, a
+    # sentinela vê a divulgação do dia anterior e, na véspera, dá tempo de o
+    # time prever ANTES de o número sair — que é o ponto de prever.
+    #
+    # O cron do GitHub é sempre em UTC e não muda com horário de verão. Ele
+    # também não é pontual: em horário de pico o disparo pode atrasar alguns
+    # minutos. Para uma checagem diária isso não muda nada.
+    - cron: "0 9 * * *"
+
+  # O botão. Aparece em Actions > IPCA — previsão automática > Run workflow, e
+  # serve para testar sem esperar o horário.
+  workflow_dispatch:
+    inputs:
+      forcar_time:
+        description: "Rodar o time mesmo que a sentinela diga que não há novidade"
+        type: boolean
+        default: false
+
+# TRAVA 1 CONTRA O LAÇO INFINITO.
+# Este workflow não tem gatilho `push`. Ele só roda por agenda ou pelo botão,
+# então o commit que ele mesmo faz não tem como disparar nada. (O GITHUB_TOKEN
+# padrão também não dispara workflows por push — mas não dependemos disso: se um
+# dia alguém acrescentar um gatilho `push` aqui, a TRAVA 2 continua de pé.)
+
+permissions:
+  # Necessário para o passo de commit escrever de volta no repositório.
+  contents: write
+
+concurrency:
+  # Duas execuções ao mesmo tempo commitariam por cima uma da outra e uma delas
+  # perderia o trabalho. `cancel-in-progress: false` porque uma rodada do time
+  # em andamento não deve ser morta no meio: ela já gastou tokens e está
+  # escrevendo arquivos.
+  group: ipca-previsao
+  cancel-in-progress: false
+
+jobs:
+  ciclo:
+    runs-on: ubuntu-latest
+    # Teto de segurança: se o time travar (LLM sem responder, API pendurada), o
+    # job morre em 20 minutos em vez de ficar horas consumindo minutos da conta.
+    timeout-minutes: 20
+
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Instalar o Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          # FIXADO em 3.12 de propósito. Na 3.14 o langchain avisa que a
+          # compatibilidade do Pydantic V1 quebrou, e parte da stack do projeto
+          # ainda não roda. "latest" aqui quebraria o sistema sozinho no dia em
+          # que o runner atualizasse.
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Instalar as dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ------------------------------------------------------------------
+      # PASSO 3 — a sentinela. Barata: sem LLM, sem token.
+      # ------------------------------------------------------------------
+      - name: Rodar a sentinela
+        id: sentinela
+        run: python sentinela.py --ci
+
+      # Se a sentinela não achou motivo, o job para AQUI. O `if` de cada passo
+      # seguinte é o que faz isso; o passo abaixo existe só para o log dizer com
+      # todas as letras por que parou, em vez de mostrar passos pulados sem
+      # explicação.
+      - name: Encerrar — nada a fazer hoje
+        if: steps.sentinela.outputs.rodar_time != 'true' && !inputs.forcar_time
+        run: |
+          echo "### Nada a fazer hoje" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.sentinela.outputs.resumo }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "O time de agentes NÃO foi acionado — nenhum token gasto." >> $GITHUB_STEP_SUMMARY
+          echo "Nada a fazer: ${{ steps.sentinela.outputs.resumo }}"
+          echo "O time não foi acionado. Encerrando o job sem gastar token."
+
+      # ------------------------------------------------------------------
+      # PASSO 4 — o time. Só roda quando há motivo (ou quando forçado no botão).
+      # ------------------------------------------------------------------
+      - name: Rodar o time de agentes
+        if: steps.sentinela.outputs.rodar_time == 'true' || inputs.forcar_time
+        env:
+          # A CHAVE NUNCA VAI NO CÓDIGO. Vem de Settings > Secrets and variables
+          # > Actions > New repository secret, com o nome GOOGLE_API_KEY.
+          #
+          # O código chama load_dotenv(), que NÃO sobrescreve variável de
+          # ambiente já existente — então na sua máquina vale o .env, e aqui vale
+          # o segredo, sem mudar uma linha de Python.
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python rodar_ciclo.py
+
+      - name: Resumo da rodada
+        if: steps.sentinela.outputs.rodar_time == 'true' || inputs.forcar_time
+        run: |
+          echo "### Rodada executada" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.sentinela.outputs.resumo }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python - <<'PY' >> $GITHUB_STEP_SUMMARY
+          from publicacao import ler_resultado
+          r = ler_resultado()
+          if r:
+              p, par = r["previsao"], r["parecer"]
+              print(f"- **Previsão:** {p['valor']}% "
+                    f"[{p['intervalo_min']}, {p['intervalo_max']}] via {p['modelo']}")
+              print(f"- **Parecer:** {'aprovado' if par['aprovado'] else 'NÃO APROVADO'}")
+              if r.get("alerta"):
+                  print(f"- ⚠️ {r['alerta']['texto']}")
+          PY
+
+      # ------------------------------------------------------------------
+      # PASSO 5 — commitar de volta o que precisa sobreviver.
+      #
+      # O runner é destruído no fim. Sem este passo, tudo que o sistema aprendeu
+      # hoje morre junto: a memória da sentinela, o acervo de previsões e o
+      # arquivo que o dashboard lê.
+      #
+      # Roda com `if: always()` para o commit acontecer mesmo se o time falhar
+      # no meio — a sentinela já anotou o que viu, e essa anotação vale. Sem
+      # isso, um erro no time faria o sistema esquecer o dia inteiro.
+      # ------------------------------------------------------------------
+      - name: Commitar o que precisa sobreviver
+        if: always()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # A lista vem de persistencia.ARQUIVOS_QUE_SOBREVIVEM, para não haver
+          # duas verdades sobre o que sobrevive. `git add` de arquivo que não
+          # existe falharia, então filtramos pelos que existem.
+          ARQUIVOS=$(python -c "
+          from pathlib import Path
+          from persistencia import ARQUIVOS_QUE_SOBREVIVEM
+          print(' '.join(a for a in ARQUIVOS_QUE_SOBREVIVEM if Path(a).exists()))
+          ")
+
+          if [ -z "$ARQUIVOS" ]; then
+            echo "Nenhum arquivo de estado para commitar."
+            exit 0
+          fi
+
+          echo "Arquivos: $ARQUIVOS"
+          git add $ARQUIVOS
+
+          # `git diff --cached --quiet` sai com 0 quando NÃO há mudança. Sem esta
+          # checagem, um dia sem novidade tentaria commitar nada e o passo
+          # falharia, pintando de vermelho um job que deu certo.
+          if git diff --cached --quiet; then
+            echo "Nada mudou — nenhum commit necessário."
+            exit 0
+          fi
+
+          # TRAVA 2 CONTRA O LAÇO INFINITO: o "[skip ci]" na mensagem faz o
+          # GitHub ignorar este commit para efeito de disparo de workflow. É a
+          # trava que continua valendo mesmo se alguém acrescentar um gatilho
+          # `push` a este arquivo no futuro.
+          git commit -m "dados: rodada de $(date -u +%Y-%m-%d) [skip ci]"
+
+          # `--rebase` porque outra execução (ou um commit seu) pode ter mexido
+          # no repositório enquanto o time rodava.
+          git pull --rebase --autostash origin ${{ github.ref_name }}
+          git push

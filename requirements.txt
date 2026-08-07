@@ -1,0 +1,57 @@
+# requirements.txt — dependências do sistema multi-agente de previsão do IPCA
+#
+# UM arquivo só, de propósito. Ele serve a DUAS máquinas:
+#
+#   1. o job do GitHub Actions, que roda o time inteiro (coleta, previsão,
+#      crítica, redação);
+#   2. o servidor do Posit Connect Cloud, que serve o dashboard.
+#
+# POR QUE NÃO SEPARAR EM DOIS. A tentação é óbvia: o dashboard "só desenha a
+# tela", então bastaria streamlit + plotly + pandas. Isso valia até o dashboard
+# ganhar o botão "rodar previsão agora" e o chat com o agente — as duas coisas
+# rodam NO SERVIDOR e chamam o time inteiro e o Gemini. Um requirements enxuto
+# faria a página abrir bem e quebrar com ImportError no primeiro clique, que é o
+# pior tipo de falha: só aparece em produção, e só quando alguém usa o recurso.
+#
+# O Actions, por sua vez, não precisa de streamlit nem plotly. Mas instalar dois
+# pacotes a mais num runner que é destruído no fim custa alguns segundos de
+# cache, e o preço de manter dois arquivos em sincronia é bem maior: adicionar
+# uma dependência e esquecer de um dos dois é fácil, e a falha aparece longe da
+# causa.
+#
+# Se um dia o dashboard voltar a ser só leitura (sem botão e sem chat),
+# separar passa a valer a pena. Hoje não.
+#
+# VERSÕES TRAVADAS (==) porque o Posit Connect Cloud e o Actions instalam do
+# zero: sem trava, uma versão nova publicada amanhã muda o comportamento de um
+# sistema que ninguém está olhando. As versões abaixo são as que estão rodando
+# e validadas aqui.
+#
+# Python 3.12 — ver runtime.txt. Na 3.14 o langchain avisa que a compatibilidade
+# do Pydantic V1 quebrou.
+
+# --- Dashboard (Posit Connect Cloud) ---
+streamlit==1.58.0
+plotly==6.8.0
+pandas==2.3.3
+
+# --- Orquestração de agentes (LangGraph) ---
+langgraph==1.2.4
+langgraph-checkpoint-sqlite==3.1.0
+
+# --- LLM (Gemini: time de agentes + chat do dashboard) ---
+langchain-google-genai==4.2.5
+langchain-core==1.4.4
+
+# --- Coleta de dados macroeconômicos ---
+python-bcb==0.3.6
+sidrapy==0.1.4
+requests==2.34.2
+
+# --- Modelagem estatística (o número da previsão sai daqui, não do LLM) ---
+statsmodels==0.14.6
+numpy==2.4.6
+
+# --- Validação e utilidades ---
+pydantic==2.12.5
+python-dotenv==1.0.1

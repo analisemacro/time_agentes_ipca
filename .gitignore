@@ -1,0 +1,82 @@
+# .gitignore
+#
+# O que NÃO vai para o repositório.
+#
+# Isto importa por dois motivos. Primeiro, o repositório é PÚBLICO: o que entrar
+# aqui fica visível para qualquer pessoa, e o histórico do git guarda para
+# sempre — apagar um segredo num commit posterior não o remove do histórico.
+# Segundo, no GitHub Actions a máquina é destruída no fim de cada execução, então
+# o repositório é o único lugar onde algo sobrevive; o que estiver ignorado aqui
+# morre a cada rodada, de propósito, quando é descartável.
+#
+# Ver persistencia.py para o desenho completo do que sobrevive e por quê.
+
+# --- SEGREDOS — nunca commitar -----------------------------------------------
+# A chave do Gemini mora aqui na sua máquina. No GitHub Actions ela vem de
+# secrets.GOOGLE_API_KEY; no Posit Connect Cloud, das variáveis de ambiente do
+# conteúdo publicado. O código usa load_dotenv(), que não sobrescreve variável
+# já definida — então o servidor funciona sem este arquivo existir.
+.env
+.env.*
+!.env.example
+
+# --- Ambiente virtual --------------------------------------------------------
+# Nunca vai para o repositório: são centenas de MB, específicos do seu sistema
+# operacional, e o servidor reinstala tudo a partir do requirements.txt.
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Descartável: estado do grafo LangGraph ----------------------------------
+# Checkpoints por thread_id servem para retomar UMA execução interrompida. Entre
+# execuções não valem nada (a rodada seguinte começa do zero de propósito), e são
+# ~6 MB que cresceriam a cada rodada e inchariam o repositório para sempre.
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db
+checkpoints/
+
+# --- Descartável: auditoria das chamadas de LLM ------------------------------
+# No Actions, sai como artefato da execução, não como commit.
+logs/
+
+# --- Descartável: caches do Python -------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# --- Restos de gravação atômica ----------------------------------------------
+# Um .tmp órfão é sinal de execução que morreu no meio da escrita. Inofensivo
+# (o arquivo bom continua íntegro) e limpo por persistencia.limpar_temporarios().
+*.tmp
+
+# --- Sistema operacional e editores ------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# =============================================================================
+# O QUE PRECISA SOBREVIVER — commitado de propósito, NÃO adicionar aqui:
+#
+#   data/previsoes.csv    o acervo: previsões vs. realizado. Não é
+#                         reconstruível — uma previsão de julho não pode ser
+#                         refeita em outubro, quando já se sabe a resposta.
+#   data/estado.json      a memória da sentinela entre execuções.
+#   data/resultado.json   o contrato com o dashboard: o que a página web lê.
+#   data/ipca.json        a série coletada, que o time lê para prever.
+#
+# Nenhum deles contém dado pessoal ou segredo: são séries públicas do IBGE/BCB e
+# as previsões do próprio sistema. Podem ser públicos sem problema.
+#
+# Se algum for parar no .gitignore, o sistema perde a memória toda vez que a
+# máquina é destruída, e o dashboard publicado fica sem nada para mostrar.
+# =============================================================================

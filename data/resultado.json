@@ -1,0 +1,347 @@
+{
+  "versao_contrato": 1,
+  "indicador": "ipca",
+  "rodada_em": "2026-08-06",
+  "rodada_em_utc": "2026-08-07T00:46:55+00:00",
+  "serie": [
+    {
+      "data": "2020-01-01",
+      "valor": 0.21
+    },
+    {
+      "data": "2020-02-01",
+      "valor": 0.25
+    },
+    {
+      "data": "2020-03-01",
+      "valor": 0.07
+    },
+    {
+      "data": "2020-04-01",
+      "valor": -0.31
+    },
+    {
+      "data": "2020-05-01",
+      "valor": -0.38
+    },
+    {
+      "data": "2020-06-01",
+      "valor": 0.26
+    },
+    {
+      "data": "2020-07-01",
+      "valor": 0.36
+    },
+    {
+      "data": "2020-08-01",
+      "valor": 0.24
+    },
+    {
+      "data": "2020-09-01",
+      "valor": 0.64
+    },
+    {
+      "data": "2020-10-01",
+      "valor": 0.86
+    },
+    {
+      "data": "2020-11-01",
+      "valor": 0.89
+    },
+    {
+      "data": "2020-12-01",
+      "valor": 1.35
+    },
+    {
+      "data": "2021-01-01",
+      "valor": 0.25
+    },
+    {
+      "data": "2021-02-01",
+      "valor": 0.86
+    },
+    {
+      "data": "2021-03-01",
+      "valor": 0.93
+    },
+    {
+      "data": "2021-04-01",
+      "valor": 0.31
+    },
+    {
+      "data": "2021-05-01",
+      "valor": 0.83
+    },
+    {
+      "data": "2021-06-01",
+      "valor": 0.53
+    },
+    {
+      "data": "2021-07-01",
+      "valor": 0.96
+    },
+    {
+      "data": "2021-08-01",
+      "valor": 0.87
+    },
+    {
+      "data": "2021-09-01",
+      "valor": 1.16
+    },
+    {
+      "data": "2021-10-01",
+      "valor": 1.25
+    },
+    {
+      "data": "2021-11-01",
+      "valor": 0.95
+    },
+    {
+      "data": "2021-12-01",
+      "valor": 0.73
+    },
+    {
+      "data": "2022-01-01",
+      "valor": 0.54
+    },
+    {
+      "data": "2022-02-01",
+      "valor": 1.01
+    },
+    {
+      "data": "2022-03-01",
+      "valor": 1.62
+    },
+    {
+      "data": "2022-04-01",
+      "valor": 1.06
+    },
+    {
+      "data": "2022-05-01",
+      "valor": 0.47
+    },
+    {
+      "data": "2022-06-01",
+      "valor": 0.67
+    },
+    {
+      "data": "2022-07-01",
+      "valor": -0.68
+    },
+    {
+      "data": "2022-08-01",
+      "valor": -0.36
+    },
+    {
+      "data": "2022-09-01",
+      "valor": -0.29
+    },
+    {
+      "data": "2022-10-01",
+      "valor": 0.59
+    },
+    {
+      "data": "2022-11-01",
+      "valor": 0.41
+    },
+    {
+      "data": "2022-12-01",
+      "valor": 0.62
+    },
+    {
+      "data": "2023-01-01",
+      "valor": 0.53
+    },
+    {
+      "data": "2023-02-01",
+      "valor": 0.84
+    },
+    {
+      "data": "2023-03-01",
+      "valor": 0.71
+    },
+    {
+      "data": "2023-04-01",
+      "valor": 0.61
+    },
+    {
+      "data": "2023-05-01",
+      "valor": 0.23
+    },
+    {
+      "data": "2023-06-01",
+      "valor": -0.08
+    },
+    {
+      "data": "2023-07-01",
+      "valor": 0.12
+    },
+    {
+      "data": "2023-08-01",
+      "valor": 0.23
+    },
+    {
+      "data": "2023-09-01",
+      "valor": 0.26
+    },
+    {
+      "data": "2023-10-01",
+      "valor": 0.24
+    },
+    {
+      "data": "2023-11-01",
+      "valor": 0.28
+    },
+    {
+      "data": "2023-12-01",
+      "valor": 0.56
+    },
+    {
+      "data": "2024-01-01",
+      "valor": 0.42
+    },
+    {
+      "data": "2024-02-01",
+      "valor": 0.83
+    },
+    {
+      "data": "2024-03-01",
+      "valor": 0.16
+    },
+    {
+      "data": "2024-04-01",
+      "valor": 0.38
+    },
+    {
+      "data": "2024-05-01",
+      "valor": 0.46
+    },
+    {
+      "data": "2024-06-01",
+      "valor": 0.21
+    },
+    {
+      "data": "2024-07-01",
+      "valor": 0.38
+    },
+    {
+      "data": "2024-08-01",
+      "valor": -0.02
+    },
+    {
+      "data": "2024-09-01",
+      "valor": 0.44
+    },
+    {
+      "data": "2024-10-01",
+      "valor": 0.56
+    },
+    {
+      "data": "2024-11-01",
+      "valor": 0.39
+    },
+    {
+      "data": "2024-12-01",
+      "valor": 0.52
+    },
+    {
+      "data": "2025-01-01",
+      "valor": 0.16
+    },
+    {
+      "data": "2025-02-01",
+      "valor": 1.31
+    },
+    {
+      "data": "2025-03-01",
+      "valor": 0.56
+    },
+    {
+      "data": "2025-04-01",
+      "valor": 0.43
+    },
+    {
+      "data": "2025-05-01",
+      "valor": 0.26
+    },
+    {
+      "data": "2025-06-01",
+      "valor": 0.24
+    },
+    {
+      "data": "2025-07-01",
+      "valor": 0.26
+    },
+    {
+      "data": "2025-08-01",
+      "valor": -0.11
+    },
+    {
+      "data": "2025-09-01",
+      "valor": 0.48
+    },
+    {
+      "data": "2025-10-01",
+      "valor": 0.09
+    },
+    {
+      "data": "2025-11-01",
+      "valor": 0.18
+    },
+    {
+      "data": "2025-12-01",
+      "valor": 0.33
+    },
+    {
+      "data": "2026-01-01",
+      "valor": 0.33
+    },
+    {
+      "data": "2026-02-01",
+      "valor": 0.7
+    },
+    {
+      "data": "2026-03-01",
+      "valor": 0.88
+    },
+    {
+      "data": "2026-04-01",
+      "valor": 0.67
+    },
+    {
+      "data": "2026-05-01",
+      "valor": 0.58
+    },
+    {
+      "data": "2026-06-01",
+      "valor": 0.16
+    }
+  ],
+  "ultima_data_serie": "2026-06-01",
+  "previsao": {
+    "valor": 0.3363,
+    "intervalo_min": -0.3494,
+    "intervalo_max": 1.022,
+    "intervalo_nivel": 0.95,
+    "modelo": "ARIMA(1,0,1)",
+    "observacoes": 78
+  },
+  "parecer": {
+    "aprovado": false,
+    "decisao": "rejeita",
+    "motivos": [
+      "O intervalo de confiança [-0.3494, 1.022] possui uma largura de 1.3714 p.p. (5.2 desvios da média recente), o que é excessivamente largo para o IPCA mensal e aceita desde deflação moderada até inflação muito alta, tornando a previsão inútil para tomada de decisão."
+    ],
+    "confianca": "alta",
+    "origem": "llm"
+  },
+  "relatorio": "O modelo projeta 0,34% para o IPCA de junho de 2026, com intervalo de -0,35% a 1,02% (95% de confiança). Essa previsão não foi aprovada na revisão: o intervalo de confiança possui uma largura excessiva de 1,37 p.p., aceitando desde deflação moderada até inflação muito alta, o que torna a projeção inútil para tomada de decisão. O número saiu de um ARIMA(1,0,1) estimado sobre 78 observações.",
+  "avisos": [
+    "persistido em data/ipca.json: 0 novo(s), 0 atualizado(s), 78 no total."
+  ],
+  "tentativas_de_previsao": 3,
+  "alerta": {
+    "tipo": "previsao_nao_aprovada",
+    "texto": "Esta previsão NÃO foi aprovada pelo crítico. O intervalo de confiança [-0.3494, 1.022] possui uma largura de 1.3714 p.p. (5.2 desvios da média recente), o que é excessivamente largo para o IPCA mensal e aceita desde deflação moderada até inflação muito alta, tornando a previsão inútil para tomada de decisão."
+  }
+}
