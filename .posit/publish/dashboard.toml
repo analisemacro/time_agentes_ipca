@@ -1,0 +1,74 @@
+# .posit/publish/dashboard.toml
+#
+# Configuração de publicação do dashboard no Posit Connect Cloud.
+#
+# POR QUE ESTE ARQUIVO EXISTE. Sem ele, o Publisher envia praticamente só o
+# entrypoint, e a aplicação sobe quebrada com
+#
+#     ModuleNotFoundError: No module named 'publicacao'
+#
+# ...porque `dashboard.py` importa módulos irmãos do projeto. O erro aparece só
+# em produção: na sua máquina os arquivos estão todos lá, ao lado.
+#
+# O QUE PRECISA IR JUNTO. O dashboard não é uma página isolada: ele lê o
+# contrato (`publicacao.py`), o caderno de acerto (`registro.py`) e a camada de
+# persistência. E o botão "rodar previsão agora" e o chat rodam NO SERVIDOR,
+# então puxam o time inteiro (`supervisor.py` e os quatro agentes), as tools e
+# os prompts. Por isso `files` abaixo é praticamente o projeto todo.
+#
+# Regra prática ao mexer aqui: se um `import` do dashboard — mesmo dentro de uma
+# função — alcança o arquivo, ele precisa estar nesta lista.
+
+schema = "https://cdn.posit.co/publisher/schemas/draft/posit-publishing-schema-v3.toml"
+type = "python-streamlit"
+entrypoint = "dashboard.py"
+title = "IPCA — sistema multi-agente"
+
+[python]
+# Mesma versão do runtime.txt e do GitHub Actions. Na 3.14 a stack do langchain
+# quebra (incompatibilidade do Pydantic V1).
+version = "3.12"
+package_file = "requirements.txt"
+package_manager = "pip"
+
+files = [
+    # --- o app ---
+    "/dashboard.py",
+
+    # --- leitura dos arquivos gravados pelo job ---
+    "/publicacao.py",
+    "/registro.py",
+    "/persistencia.py",
+    "/memoria.py",
+
+    # --- o time (usado pelo botão "rodar previsão agora") ---
+    "/supervisor.py",
+    "/coletor.py",
+    "/previsor.py",
+    "/critico.py",
+    "/redator.py",
+    "/rodar_ciclo.py",
+    "/state.py",
+    "/texto.py",
+
+    # --- o chat ---
+    "/conversa.py",
+
+    # --- código puro que os agentes chamam como ferramenta ---
+    "/tools/",
+
+    # --- prompts de sistema (lidos em tempo de import por cada agente) ---
+    "/prompts/",
+
+    # --- os dados que a página desenha ---
+    # Sem estes, o dashboard sobe mostrando "nenhuma rodada publicada ainda".
+    # O checkpoints.sqlite NÃO entra: é descartável e pesa ~6 MB.
+    "/data/resultado.json",
+    "/data/previsoes.csv",
+    "/data/ipca.json",
+    "/data/estado.json",
+
+    # --- ambiente ---
+    "/requirements.txt",
+    "/runtime.txt",
+]
