@@ -30,7 +30,29 @@
 
 from __future__ import annotations
 
+import sys
 from datetime import date
+from pathlib import Path
+
+# Garante que a pasta deste arquivo é importável ANTES dos imports do projeto.
+#
+# Por que isto é necessário: rodando `streamlit run dashboard.py` na sua
+# máquina, o Python já põe a pasta do script no sys.path e tudo funciona. O
+# Posit Connect Cloud, não: ele executa o script com `exec()` a partir do venv
+# dele (/cloud/lib/venv), e a pasta do projeto (/cloud/project) não entra no
+# caminho de import. O resultado é
+#
+#     ModuleNotFoundError: No module named 'publicacao'
+#
+# ...mesmo com o arquivo ali, ao lado do dashboard.py. O erro engana porque
+# parece arquivo faltando, quando é o Python não olhando na pasta certa.
+#
+# Estas três linhas resolvem no próprio app, sem depender de configuração do
+# servidor — o que também protege contra qualquer outro host que execute o
+# script de um diretório diferente.
+_AQUI = str(Path(__file__).resolve().parent)
+if _AQUI not in sys.path:
+    sys.path.insert(0, _AQUI)
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -119,7 +141,7 @@ def _pagina_sem_resultado() -> None:
     if not historico.empty:
         st.divider()
         st.caption("Já existe histórico de previsões registrado:")
-        st.dataframe(historico, use_container_width=True, hide_index=True)
+        st.dataframe(historico, width="stretch", hide_index=True)
 
 
 # ---------------------------------------------------------------------------
@@ -249,7 +271,7 @@ def _barra_lateral() -> None:
         )
 
         if st.button("▶️ Rodar previsão agora", type="primary",
-                     use_container_width=True):
+                     width="stretch"):
             _rodar_time_agora()
 
         ultima = st.session_state.get("ultima_rodada_manual")
@@ -436,7 +458,7 @@ def main() -> None:
 
     with esquerda:
         st.subheader("Série e previsão")
-        st.plotly_chart(_grafico(resultado), use_container_width=True)
+        st.plotly_chart(_grafico(resultado), width="stretch")
 
     with direita:
         st.subheader("O sistema acerta?")
@@ -447,7 +469,7 @@ def main() -> None:
             tabela = _tabela_historico(historico)
             st.dataframe(
                 tabela.style.map(_estilo_pendente, subset=["IBGE", "Erro"]),
-                use_container_width=True, hide_index=True, height=380,
+                width="stretch", hide_index=True, height=380,
             )
 
             resumo = desempenho()
