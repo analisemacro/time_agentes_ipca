@@ -4,19 +4,19 @@
       "ultima_data_observada": "2026-06-01",
       "ultimo_valor_observado": 0.16,
       "visto_pela_primeira_vez_em": "2026-08-06",
-      "conferido_em": "2026-08-07"
+      "conferido_em": "2026-08-08"
     }
   },
   "rodadas": {
     "ultima": {
-      "em": "2026-08-07",
+      "em": "2026-08-08",
       "acao": "nada_a_fazer",
       "detalhe": "Nada a fazer: a divulgação de julho de 2026 é em 2026-08-11 e já está prevista e a série segue em 2026-06-01."
     },
     "ultima_nada_a_fazer": {
-      "em": "2026-08-07",
+      "em": "2026-08-08",
       "detalhe": "Nada a fazer: a divulgação de julho de 2026 é em 2026-08-11 e já está prevista e a série segue em 2026-06-01."
     },
-    "carimbo_utc": "2026-08-07T09:57:20+00:00"
+    "carimbo_utc": "2026-08-08T09:32:50+00:00"
   }
 }
