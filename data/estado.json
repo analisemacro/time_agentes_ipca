@@ -4,20 +4,20 @@
       "ultima_data_observada": "2026-07-01",
       "ultimo_valor_observado": 0.07,
       "visto_pela_primeira_vez_em": "2026-08-12",
-      "conferido_em": "2026-08-14"
+      "conferido_em": "2026-08-15"
     }
   },
   "rodadas": {
     "ultima": {
-      "em": "2026-08-14",
+      "em": "2026-08-15",
       "acao": "nada_a_fazer",
       "detalhe": "Nada a fazer: a divulgação de agosto de 2026 é em 2026-09-11 e já está prevista e a série segue em 2026-07-01."
     },
     "ultima_nada_a_fazer": {
-      "em": "2026-08-14",
+      "em": "2026-08-15",
       "detalhe": "Nada a fazer: a divulgação de agosto de 2026 é em 2026-09-11 e já está prevista e a série segue em 2026-07-01."
     },
-    "carimbo_utc": "2026-08-14T09:56:08+00:00",
+    "carimbo_utc": "2026-08-15T09:21:08+00:00",
     "ultima_dado_novo_chegou": {
       "em": "2026-08-12",
       "detalhe": "Dado novo: a fonte já publica 2026-07-01 e o último ponto guardado é 2026-06-01 — há valor real para comparar com o previsto."
