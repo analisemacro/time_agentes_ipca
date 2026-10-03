@@ -9,22 +9,22 @@
   },
   "rodadas": {
     "ultima": {
-      "em": "2026-10-01",
+      "em": "2026-10-03",
       "acao": "nao_deu_para_verificar",
-      "detalhe": "Não deu para verificar: série do IPCA: Não foi possível falar com o SGS (série 433): The read operation timed out. Nenhuma conclusão foi tirada — isto NÃO significa 'sem novidade'."
+      "detalhe": "Não deu para verificar: série do IPCA: Não foi possível falar com o SGS (série 433): <urlopen error [Errno -2] Name or service not known>. Nenhuma conclusão foi tirada — isto NÃO significa 'sem novida"
     },
     "ultima_nada_a_fazer": {
       "em": "2026-09-29",
       "detalhe": "Nada a fazer: faltam 10 dias para a divulgação de setembro de 2026 e a série segue em 2026-08-01."
     },
-    "carimbo_utc": "2026-10-01T15:57:02+00:00",
+    "carimbo_utc": "2026-10-03T14:07:21+00:00",
     "ultima_dado_novo_chegou": {
       "em": "2026-09-11",
       "detalhe": "Dado novo: a fonte já publica 2026-08-01 e o último ponto guardado é 2026-07-01 — há valor real para comparar com o previsto."
     },
     "ultima_nao_deu_para_verificar": {
-      "em": "2026-10-01",
-      "detalhe": "Não deu para verificar: série do IPCA: Não foi possível falar com o SGS (série 433): The read operation timed out. Nenhuma conclusão foi tirada — isto NÃO significa 'sem novidade'."
+      "em": "2026-10-03",
+      "detalhe": "Não deu para verificar: série do IPCA: Não foi possível falar com o SGS (série 433): <urlopen error [Errno -2] Name or service not known>. Nenhuma conclusão foi tirada — isto NÃO significa 'sem novida"
     }
   }
 }
